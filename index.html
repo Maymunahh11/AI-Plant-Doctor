@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Plant Doctor</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">🌱 AI Plant Doctor</div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#doctor">Plant Doctor</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
+
+
+    <main>
+
+        <section id="home" class="hero">
+
+            <div class="hero-text">
+
+                <p class="tag">AI + COMPUTER VISION</p>
+
+                <h1>
+                    Your Plant's
+                    <span>AI Doctor</span>
+                </h1>
+
+                <p>
+                    Upload a picture of a plant leaf and let
+                    Artificial Intelligence detect possible
+                    diseases and provide plant-care guidance.
+                </p>
+
+                <a href="#doctor" class="button">
+                    Diagnose My Plant 🌿
+                </a>
+
+            </div>
+
+            <div class="plant-icon">
+                🌿
+            </div>
+
+        </section>
+
+
+        <section id="doctor" class="doctor">
+
+            <h2>🌱 Plant Health Analyzer</h2>
+
+            <p class="subtitle">
+                Upload a clear image of a plant leaf
+            </p>
+
+
+            <div class="upload-box">
+
+                <div class="upload-icon">
+                    📷
+                </div>
+
+                <h3>Upload Leaf Image</h3>
+
+                <p>
+                    JPG, JPEG or PNG
+                </p>
+
+                <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                >
+
+                <label for="imageInput" class="upload-button">
+                    Choose Image
+                </label>
+
+                <img id="preview" alt="Leaf preview">
+
+                <button
+                    id="analyzeButton"
+                    class="analyze-button"
+                    onclick="analyzePlant()"
+                >
+                    🔍 Analyze Plant
+                </button>
+
+            </div>
+
+
+            <div id="result" class="result">
+
+                <h2>AI Diagnosis</h2>
+
+                <div class="result-card">
+
+                    <h3 id="disease">
+                        Waiting for image...
+                    </h3>
+
+                    <p>
+                        Confidence:
+                        <strong id="confidence">--</strong>
+                    </p>
+
+                    <p>
+                        Severity:
+                        <strong id="severity">--</strong>
+                    </p>
+
+                </div>
+
+
+                <div class="advice">
+
+                    <h3>💡 AI Recommendation</h3>
+
+                    <p id="recommendation">
+                        Upload a leaf image to receive
+                        an AI-generated diagnosis.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section id="about" class="about">
+
+            <h2>How AI Plant Doctor Works</h2>
+
+            <div class="steps">
+
+                <div class="step">
+                    <span>📷</span>
+                    <h3>1. Upload</h3>
+                    <p>
+                        Upload an image of a plant leaf.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <span>🧠</span>
+                    <h3>2. AI Analysis</h3>
+                    <p>
+                        The AI model analyzes visual features
+                        of the leaf.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <span>🩺</span>
+                    <h3>3. Diagnosis</h3>
+                    <p>
+                        The system predicts the possible
+                        plant disease.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <span>💊</span>
+                    <h3>4. Recommendation</h3>
+                    <p>
+                        Get suggested treatment and
+                        prevention guidance.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>🌱 AI Plant Doctor | AI & ML Internship Project</p>
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
