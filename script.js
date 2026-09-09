@@ -1,3 +1,4 @@
+```javascript
 const imageInput = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 const analyzeButton = document.getElementById("analyzeButton");
@@ -75,4 +76,6 @@ async function analyzePlant() {
             "Could not connect to the AI backend. Please try again.";
     }
 }
+```
+
    
