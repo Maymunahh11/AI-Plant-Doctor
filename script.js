@@ -3,11 +3,9 @@ const preview = document.getElementById("preview");
 const analyzeButton = document.getElementById("analyzeButton");
 
 imageInput.addEventListener("change", function () {
-
     const file = this.files[0];
 
     if (file) {
-
         const reader = new FileReader();
 
         reader.onload = function (e) {
@@ -20,8 +18,14 @@ imageInput.addEventListener("change", function () {
     }
 });
 
+async function analyzePlant() {
 
-function analyzePlant() {
+    const file = imageInput.files[0];
+
+    if (!file) {
+        alert("Please choose a plant leaf image first.");
+        return;
+    }
 
     const result = document.getElementById("result");
     const disease = document.getElementById("disease");
@@ -32,22 +36,45 @@ function analyzePlant() {
     result.style.display = "block";
 
     disease.innerText = "🧠 AI is analyzing...";
-
     confidence.innerText = "...";
     severity.innerText = "...";
+    recommendation.innerText = "Please wait...";
 
-    setTimeout(function () {
+    const formData = new FormData();
+    formData.append("image", file);
 
-        disease.innerText = "🍅 Tomato — Late Blight";
+    try {
 
-        confidence.innerText = "94.7%";
+        const response = await fetch(
+            "https://stress-carwash-certified.ngrok-free.dev/predict",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
 
-        severity.innerText = "Moderate ⚠️";
+        const data = await response.json();
 
+        if (!response.ok) {
+            throw new Error(data.error || "Prediction failed");
+        }
+
+        disease.innerText = "🌱 " + data.disease;
+        confidence.innerText = data.confidence + "%";
+        severity.innerText = data.severity;
+        recommendation.innerText = data.recommendation;
+
+    } catch (error) {
+
+        console.error(error);
+
+        disease.innerText = "❌ Connection Error";
+        confidence.innerText = "--";
+        severity.innerText = "--";
         recommendation.innerText =
-            "Remove infected leaves, avoid overhead watering, " +
-            "improve air circulation, and monitor nearby plants " +
-            "for similar symptoms.";
-
-    }, 1500);
+            "Could not connect to the AI backend. Make sure Flask and ngrok are running.";
+    }
 }
+
+
+        
