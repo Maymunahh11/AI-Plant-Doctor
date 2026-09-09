@@ -395,10 +395,6 @@ if (!response.ok) {
         "Server returned error: " + response.status
     );
 }
-
-            const data = await response.json();
-
-
             document.getElementById("disease").textContent =
                 formatDisease(data.disease);
 
