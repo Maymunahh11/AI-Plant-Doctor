@@ -60,7 +60,7 @@ async function analyzePlant() {
         }
 
         disease.innerText = "🌱 " + data.disease;
-        confidence.innerText = data.confidence + "%";
+        confidence.innerText = data.confidence;
         severity.innerText = data.severity;
         recommendation.innerText = data.recommendation;
 
