@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AI Plant Doctor 🌿</title>
 
     <style>
@@ -95,7 +94,6 @@
             max-height: 300px;
             border-radius: 18px;
             border: 3px solid rgba(255,255,255,0.5);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .button {
@@ -108,18 +106,11 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
         }
 
         .button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
         .loading {
@@ -198,20 +189,6 @@
             background: rgba(192,57,43,0.35);
             text-align: center;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 22px;
-            }
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .logo {
-                font-size: 45px;
-            }
-        }
     </style>
 </head>
 
@@ -234,22 +211,13 @@
         <p>Supports JPG, JPEG and PNG</p>
     </label>
 
-    <input
-        type="file"
-        id="imageInput"
-        accept="image/*"
-    >
+    <input type="file" id="imageInput" accept="image/*">
 
     <div class="preview" id="preview">
         <img id="previewImage" alt="Plant preview">
     </div>
 
-    <button
-        class="button"
-        id="predictButton"
-        onclick="predictDisease()"
-        disabled
-    >
+    <button class="button" id="predictButton" onclick="predictDisease()" disabled>
         🔍 Analyze Plant
     </button>
 
@@ -296,160 +264,110 @@
 
 </div>
 
-
 <script>
 
-    const API_URL =
-    const API_URL = "/predict";
-    
-       
+const API_URL = "/predict";
 
-    let selectedFile = null;
+let selectedFile = null;
 
-    const imageInput =
-        document.getElementById("imageInput");
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+const previewImage = document.getElementById("previewImage");
+const predictButton = document.getElementById("predictButton");
+const loading = document.getElementById("loading");
+const result = document.getElementById("result");
+const errorBox = document.getElementById("error");
 
-    const preview =
-        document.getElementById("preview");
+imageInput.addEventListener("change", function () {
 
-    const previewImage =
-        document.getElementById("previewImage");
+    selectedFile = this.files[0];
 
-    const predictButton =
-        document.getElementById("predictButton");
-
-    const loading =
-        document.getElementById("loading");
-
-    const result =
-        document.getElementById("result");
-
-    const errorBox =
-        document.getElementById("error");
-
-
-    imageInput.addEventListener("change", function () {
-
-        selectedFile = this.files[0];
-
-        if (!selectedFile) {
-            predictButton.disabled = true;
-            preview.style.display = "none";
-            return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = function (event) {
-
-            previewImage.src = event.target.result;
-
-            preview.style.display = "block";
-
-            predictButton.disabled = false;
-
-            result.style.display = "none";
-
-            errorBox.style.display = "none";
-        };
-
-        reader.readAsDataURL(selectedFile);
-    });
-
-
-    async function predictDisease() {
-
-        if (!selectedFile) {
-            return;
-        }
-
+    if (!selectedFile) {
         predictButton.disabled = true;
+        preview.style.display = "none";
+        return;
+    }
 
-        loading.style.display = "block";
+    const reader = new FileReader();
 
+    reader.onload = function (event) {
+        previewImage.src = event.target.result;
+        preview.style.display = "block";
+        predictButton.disabled = false;
         result.style.display = "none";
-
         errorBox.style.display = "none";
+    };
 
+    reader.readAsDataURL(selectedFile);
+});
 
-        const formData = new FormData();
+async function predictDisease() {
 
-        formData.append("image", selectedFile);
+    if (!selectedFile) return;
 
+    predictButton.disabled = true;
+    loading.style.display = "block";
+    result.style.display = "none";
+    errorBox.style.display = "none";
 
-        try {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
 
-            const response = await fetch(
-                API_URL,
-                {
-                    method: "POST",
-                    body: formData
-                }
+    try {
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Server returned error: " + response.status
             );
+        }
 
+        document.getElementById("disease").textContent =
+            formatDisease(data.disease);
 
-           const data = await response.json().catch(() => ({}));
+        document.getElementById("confidence").textContent =
+            data.confidence;
 
-if (!response.ok) {
-    throw new Error(
-        data.error ||
-        "Server returned error: " + response.status
-    );
+        document.getElementById("severity").textContent =
+            data.severity;
+
+        document.getElementById("recommendation").textContent =
+            data.recommendation;
+
+        result.style.display = "block";
+
+    } catch (error) {
+
+        console.error(error);
+
+        errorBox.textContent = "❌ " + error.message;
+        errorBox.style.display = "block";
+
+    } finally {
+
+        loading.style.display = "none";
+        predictButton.disabled = false;
+    }
 }
-            document.getElementById("disease").textContent =
-                formatDisease(data.disease);
 
-            document.getElementById("confidence").textContent =
-                data.confidence;
+function formatDisease(name) {
 
-            document.getElementById("severity").textContent =
-                data.severity;
+    if (!name) return "Unknown";
 
-            document.getElementById("recommendation").textContent =
-                data.recommendation;
-
-
-            result.style.display = "block";
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-           errorBox.textContent =
-    "❌ " + error.message;
-            errorBox.style.display = "block";
-        }
-
-        finally {
-
-            loading.style.display = "none";
-
-            predictButton.disabled = false;
-        }
-    }
-
-
-    function formatDisease(name) {
-
-        if (!name) {
-            return "Unknown";
-        }
-
-        return name
-            .replaceAll("___", " — ")
-            .replaceAll("_", " ")
-            .replaceAll("(", " (")
-            .replaceAll("  ", " ")
-            .trim();
-    }
+    return name
+        .replaceAll("___", " — ")
+        .replaceAll("_", " ")
+        .replaceAll("  ", " ")
+        .trim();
+}
 
 </script>
 
 </body>
 </html>
-
-              
-
-          
