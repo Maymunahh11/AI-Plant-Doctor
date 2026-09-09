@@ -46,7 +46,7 @@ async function analyzePlant() {
     try {
 
         const response = await fetch(
-            "https://stress-carwash-certified.ngrok-free.dev/predict",
+            "https://ai-plant-doctor-backend.onrender.com/predict",
             {
                 method: "POST",
                 body: formData
@@ -72,9 +72,7 @@ async function analyzePlant() {
         confidence.innerText = "--";
         severity.innerText = "--";
         recommendation.innerText =
-            "Could not connect to the AI backend. Make sure Flask and ngrok are running.";
+            "Could not connect to the AI backend. Please try again.";
     }
 }
-
-
-        
+   
