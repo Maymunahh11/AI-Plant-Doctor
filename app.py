@@ -2,7 +2,7 @@ import os
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
@@ -92,6 +92,11 @@ def predict_image(image):
     }
 
 
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
 
@@ -108,20 +113,9 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/")
-def home():
-    return """
-    <h1>🌿🩺 AI Plant Doctor</h1>
-    <p>AI Plant Disease Detection System</p>
-    <p>Model: MobileNetV2</p>
-    <p>Classes: 38</p>
-    <p>Status: Running ✅</p>
-    """
-
-
 if __name__ == "__main__":
     app.run(
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=5000,
         debug=False
     )
