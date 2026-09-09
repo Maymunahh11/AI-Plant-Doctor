@@ -3,20 +3,26 @@ const imageInput = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 const analyzeButton = document.getElementById("analyzeButton");
 
+const API_URL = "https://ai-plant-doctor-backend.onrender.com/predict";
+
 imageInput.addEventListener("change", function () {
     const file = this.files[0];
 
-    if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.style.display = "block";
-            analyzeButton.style.display = "inline-block";
-        };
-
-        reader.readAsDataURL(file);
+    if (!file) {
+        preview.style.display = "none";
+        analyzeButton.style.display = "none";
+        return;
     }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        analyzeButton.style.display = "inline-block";
+    };
+
+    reader.readAsDataURL(file);
 });
 
 async function analyzePlant() {
@@ -41,18 +47,17 @@ async function analyzePlant() {
     severity.innerText = "...";
     recommendation.innerText = "Please wait...";
 
+    analyzeButton.disabled = true;
+
     const formData = new FormData();
     formData.append("image", file);
 
     try {
 
-        const response = await fetch(
-            "https://ai-plant-doctor-backend.onrender.com/predict",
-            {
-                method: "POST",
-                body: formData
-            }
-        );
+        const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData
+        });
 
         const data = await response.json();
 
@@ -67,15 +72,18 @@ async function analyzePlant() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error("AI Plant Doctor Error:", error);
 
         disease.innerText = "❌ Connection Error";
         confidence.innerText = "--";
         severity.innerText = "--";
         recommendation.innerText =
-            "Could not connect to the AI backend. Please try again.";
+            "The AI server could not process this image. Please try again.";
+
+    } finally {
+
+        analyzeButton.disabled = false;
+
     }
 }
 ```
-
-   
