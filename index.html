@@ -1,274 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Plant Doctor 🌿</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Plant Doctor 🌿</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0b3d2e, #145a32, #1e8449);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 25px;
-        }
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#0b3d2e,#145a32,#1e8449);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px
+}
 
-        .container {
-            width: 100%;
-            max-width: 850px;
-            background: rgba(255,255,255,0.10);
-            backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 28px;
-            padding: 35px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-        }
+.container{
+width:100%;
+max-width:850px;
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.2);
+border-radius:28px;
+padding:35px;
+box-shadow:0 20px 60px rgba(0,0,0,.35)
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.header{text-align:center;margin-bottom:30px}
+.logo{font-size:55px}
+h1{font-size:38px;margin:8px 0}
+.subtitle{color:#d5f5e3}
 
-        .logo {
-            font-size: 55px;
-            margin-bottom: 8px;
-        }
+.upload-area{
+border:2px dashed rgba(255,255,255,.6);
+border-radius:20px;
+padding:30px;
+text-align:center;
+margin-bottom:20px
+}
 
-        h1 {
-            font-size: 38px;
-            margin-bottom: 8px;
-        }
+.upload-area h3{margin:10px 0}
 
-        .subtitle {
-            color: #d5f5e3;
-            font-size: 16px;
-        }
+#imageInput{
+display:block;
+width:100%;
+margin:20px 0;
+padding:12px;
+background:white;
+color:#145a32;
+border-radius:10px;
+cursor:pointer
+}
 
-        .upload-box {
-            border: 2px dashed rgba(255,255,255,0.5);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 20px;
-        }
+.preview{
+display:none;
+text-align:center;
+margin:20px 0
+}
 
-        .upload-box:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: white;
-        }
+.preview img{
+max-width:300px;
+max-height:300px;
+border-radius:18px;
+border:3px solid white
+}
 
-        .upload-icon {
-            font-size: 45px;
-            margin-bottom: 10px;
-        }
+button{
+width:100%;
+padding:16px;
+border:0;
+border-radius:14px;
+background:white;
+color:#145a32;
+font-size:18px;
+font-weight:bold;
+cursor:pointer
+}
 
-        .upload-box p {
-            margin: 8px;
-            color: #e8f8f5;
-        }
+button:disabled{opacity:.5}
 
-        input[type="file"] {
-            display: none;
-        }
+.loading,.result,.error{display:none}
 
-        .preview {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
+.loading{text-align:center;margin:25px}
 
-        .preview img {
-            max-width: 300px;
-            max-height: 300px;
-            border-radius: 18px;
-            border: 3px solid rgba(255,255,255,0.5);
-        }
+.result{
+margin-top:25px;
+background:rgba(255,255,255,.12);
+border-radius:20px;
+padding:25px
+}
 
-        .button {
-            width: 100%;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            background: white;
-            color: #145a32;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.result h2{text-align:center;margin-bottom:20px}
 
-        .button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+.card{
+background:rgba(0,0,0,.18);
+padding:18px;
+border-radius:14px;
+margin:10px 0
+}
 
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 25px 0;
-        }
+.label{
+font-size:12px;
+color:#b8e6c9;
+text-transform:uppercase;
+margin-bottom:6px
+}
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: auto auto 12px;
-        }
+.value{font-size:20px;font-weight:bold}
 
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+.error{
+margin-top:20px;
+padding:15px;
+background:rgba(192,57,43,.5);
+border-radius:12px;
+text-align:center
+}
 
-        .result {
-            display: none;
-            margin-top: 28px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 20px;
-            padding: 25px;
-        }
-
-        .result-title {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .result-card {
-            background: rgba(0,0,0,0.15);
-            border-radius: 15px;
-            padding: 18px;
-            margin-bottom: 12px;
-        }
-
-        .label {
-            font-size: 13px;
-            color: #b8e6c9;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .value {
-            font-size: 21px;
-            font-weight: bold;
-        }
-
-        .recommendation {
-            line-height: 1.6;
-            font-size: 16px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #c8e6d5;
-            font-size: 13px;
-        }
-
-        .error {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            background: rgba(192,57,43,0.35);
-            text-align: center;
-        }
-    </style>
+.footer{text-align:center;margin-top:25px;font-size:13px;color:#c8e6d5}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="header">
-        <div class="logo">🌿🩺</div>
-        <h1>AI Plant Doctor</h1>
-        <p class="subtitle">
-            AI-powered plant disease detection using deep learning
-        </p>
-    </div>
+<div class="header">
+<div class="logo">🌿🩺</div>
+<h1>AI Plant Doctor</h1>
+<p class="subtitle">AI-powered plant disease detection using deep learning</p>
+</div>
 
-    <label class="upload-box" for="imageInput">
-        <div class="upload-icon">📷</div>
-        <h3>Upload a Plant Leaf</h3>
-        <p>Click here to choose an image</p>
-        <p>Supports JPG, JPEG and PNG</p>
-    </label>
+<div class="upload-area">
+<div style="font-size:45px">📷</div>
+<h3>Upload a Plant Leaf</h3>
+<p>Choose a JPG, JPEG or PNG image</p>
 
-    <input type="file" id="imageInput" accept="image/*">
+<input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png">
+</div>
 
-    <div class="preview" id="preview">
-        <img id="previewImage" alt="Plant preview">
-    </div>
+<div class="preview" id="preview">
+<img id="previewImage">
+</div>
 
-    <button class="button" id="predictButton" onclick="predictDisease()" disabled>
-        🔍 Analyze Plant
-    </button>
+<button id="predictButton" disabled>
+🔍 Analyze Plant
+</button>
 
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>AI is analyzing your plant...</p>
-    </div>
+<div class="loading" id="loading">
+<p>🌱 AI is analyzing your plant...</p>
+</div>
 
-    <div class="error" id="error"></div>
+<div class="error" id="error"></div>
 
-    <div class="result" id="result">
+<div class="result" id="result">
 
-        <div class="result-title">
-            🌱 Diagnosis Result
-        </div>
+<h2>🌱 Diagnosis Result</h2>
 
-        <div class="result-card">
-            <div class="label">Detected Disease</div>
-            <div class="value" id="disease">-</div>
-        </div>
+<div class="card">
+<div class="label">Detected Disease</div>
+<div class="value" id="disease">-</div>
+</div>
 
-        <div class="result-card">
-            <div class="label">Confidence</div>
-            <div class="value" id="confidence">-</div>
-        </div>
+<div class="card">
+<div class="label">Confidence</div>
+<div class="value" id="confidence">-</div>
+</div>
 
-        <div class="result-card">
-            <div class="label">Severity</div>
-            <div class="value" id="severity">-</div>
-        </div>
+<div class="card">
+<div class="label">Severity</div>
+<div class="value" id="severity">-</div>
+</div>
 
-        <div class="result-card">
-            <div class="label">Recommendation</div>
-            <div class="value recommendation" id="recommendation">-</div>
-        </div>
+<div class="card">
+<div class="label">Recommendation</div>
+<div class="value" id="recommendation">-</div>
+</div>
 
-    </div>
+</div>
 
-    <div class="footer">
-        Powered by MobileNetV2 • TensorFlow • Flask • AI/ML
-        <br><br>
-        🌿 AI Plant Doctor — 38 Plant Disease Classes
-    </div>
+<div class="footer">
+Powered by MobileNetV2 • TensorFlow • Flask • AI/ML
+<br><br>
+🌿 AI Plant Doctor — 38 Plant Disease Classes
+</div>
 
 </div>
 
 <script>
 
 const API_URL = "/predict";
-
-let selectedFile = null;
 
 const imageInput = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
@@ -278,93 +200,95 @@ const loading = document.getElementById("loading");
 const result = document.getElementById("result");
 const errorBox = document.getElementById("error");
 
-imageInput.addEventListener("change", function () {
+let selectedFile = null;
 
-    selectedFile = this.files[0];
+imageInput.addEventListener("change", function(){
 
-    if (!selectedFile) {
-        predictButton.disabled = true;
-        preview.style.display = "none";
-        return;
-    }
+selectedFile = this.files[0];
 
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-        previewImage.src = event.target.result;
-        preview.style.display = "block";
-        predictButton.disabled = false;
-        result.style.display = "none";
-        errorBox.style.display = "none";
-    };
-
-    reader.readAsDataURL(selectedFile);
-});
-
-async function predictDisease() {
-
-    if (!selectedFile) return;
-
-    predictButton.disabled = true;
-    loading.style.display = "block";
-    result.style.display = "none";
-    errorBox.style.display = "none";
-
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-
-    try {
-
-        const response = await fetch(API_URL, {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-            throw new Error(
-                data.error || "Server returned error: " + response.status
-            );
-        }
-
-        document.getElementById("disease").textContent =
-            formatDisease(data.disease);
-
-        document.getElementById("confidence").textContent =
-            data.confidence;
-
-        document.getElementById("severity").textContent =
-            data.severity;
-
-        document.getElementById("recommendation").textContent =
-            data.recommendation;
-
-        result.style.display = "block";
-
-    } catch (error) {
-
-        console.error(error);
-
-        errorBox.textContent = "❌ " + error.message;
-        errorBox.style.display = "block";
-
-    } finally {
-
-        loading.style.display = "none";
-        predictButton.disabled = false;
-    }
+if(!selectedFile){
+predictButton.disabled = true;
+preview.style.display = "none";
+return;
 }
 
-function formatDisease(name) {
+const reader = new FileReader();
 
-    if (!name) return "Unknown";
+reader.onload = function(e){
+previewImage.src = e.target.result;
+preview.style.display = "block";
+predictButton.disabled = false;
+errorBox.style.display = "none";
+result.style.display = "none";
+};
 
-    return name
-        .replaceAll("___", " — ")
-        .replaceAll("_", " ")
-        .replaceAll("  ", " ")
-        .trim();
+reader.readAsDataURL(selectedFile);
+
+});
+
+predictButton.addEventListener("click", async function(){
+
+if(!selectedFile) return;
+
+predictButton.disabled = true;
+loading.style.display = "block";
+errorBox.style.display = "none";
+result.style.display = "none";
+
+const formData = new FormData();
+formData.append("image",selectedFile);
+
+try{
+
+const response = await fetch(API_URL,{
+method:"POST",
+body:formData
+});
+
+const data = await response.json();
+
+if(!response.ok){
+throw new Error(data.error || "Server error");
+}
+
+document.getElementById("disease").textContent =
+formatDisease(data.disease);
+
+document.getElementById("confidence").textContent =
+data.confidence;
+
+document.getElementById("severity").textContent =
+data.severity;
+
+document.getElementById("recommendation").textContent =
+data.recommendation;
+
+result.style.display = "block";
+
+}catch(error){
+
+errorBox.textContent = "❌ " + error.message;
+errorBox.style.display = "block";
+
+}finally{
+
+loading.style.display = "none";
+predictButton.disabled = false;
+
+}
+
+});
+
+function formatDisease(name){
+
+if(!name) return "Unknown";
+
+return name
+.replaceAll("___"," — ")
+.replaceAll("_"," ")
+.replaceAll("  "," ")
+.trim();
+
 }
 
 </script>
